@@ -1,0 +1,67 @@
+
+import PageHeading from "./PageHeading";
+import ProductLists from "./ProductLists";
+//import products from "../data/product";
+import { useState, useEffect } from "react";
+import apiClient from "../api/apiClient"; // Import the API client for making requests
+import imageMap from "../utils/imageMap"; // Import the image mapping utility
+
+export default function Home() {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Run once when the component mounts
+  // Mounting is the process of creating and adding the component into DOM
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      // Simulate an API call
+      const response = await apiClient.get("/products"); // Axios GET Request
+      // Map DB image paths to local assets
+      const productsWithImages = response.data.map(p => ({
+        ...p,
+        imageUrl: imageMap[p.imageUrl] || p.imageUrl,
+      }));
+
+      setProducts(productsWithImages);
+    } catch (err) {
+      setError(
+        error.response?.data?.message ||
+        "Failed to fetch products. Please try again."
+      ); // Extract error message if available
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <span className="text-xl font-semibold">Loading products...</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <span className="text-xl text-red-500">Error: {error}</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="home-container">
+      <PageHeading title="Explore Eazy Stickers!">
+        Add a touch of creativity to your space with our wide range of fun and
+        unique stickers. Perfect for any occasion!
+      </PageHeading>
+      <ProductLists products={products} />
+    </div>
+  );
+}
