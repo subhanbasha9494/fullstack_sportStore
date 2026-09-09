@@ -1,4 +1,7 @@
 package com.selfpreparation.sportstores.repository;
 
-public interface ContactRepository {
+import com.selfpreparation.sportstores.entity.Contact;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ContactRepository extends JpaRepository<Contact, Long> {
 }

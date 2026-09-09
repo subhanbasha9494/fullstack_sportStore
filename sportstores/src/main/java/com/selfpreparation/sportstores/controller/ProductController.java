@@ -5,6 +5,7 @@ import com.selfpreparation.sportstores.entity.Product;
 import com.selfpreparation.sportstores.repository.ProductRepository;
 import com.selfpreparation.sportstores.service.IProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,8 +29,8 @@ public class ProductController {
 //        return productList;
 //    }
     @GetMapping
-    public List<ProductDto> getProducts(){
+    public ResponseEntity<List<ProductDto>> getProducts(){
         List<ProductDto> productList = iProductService.getProducts();
-        return productList;
+        return ResponseEntity.ok().body(productList);
     }
 }
