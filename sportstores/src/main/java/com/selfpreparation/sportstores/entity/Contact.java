@@ -40,6 +40,6 @@ public class Contact {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
-    @Column(name = "updated_by", length = 20)
+    @Column(name = "updated_by", length = 50)
     private String updatedBy;
 }
