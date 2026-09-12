@@ -13,8 +13,7 @@ public class PublicpathConfig {
         return List.of(
                 "/api/products",
                 "/api/contacts",
-                "/api/auth",
-                "/h2-console/**"
+                "/api/auth"
         );
     };
 }

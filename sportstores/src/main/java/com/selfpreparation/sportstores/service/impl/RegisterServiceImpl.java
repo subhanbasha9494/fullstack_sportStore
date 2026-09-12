@@ -39,6 +39,7 @@ public class RegisterServiceImpl implements IRegisterService {
         customer.setEmail(request.getEmail());
         customer.setPassword(passwordEncoder.encode(request.getPassword()));
         customer.setMobileNumber(request.getMobileNumber());
+        customer.setCreatedBy(request.getName());
         Customer savedCustomer = customerRepository.save(customer);
 
         UserDto userDto = new UserDto();

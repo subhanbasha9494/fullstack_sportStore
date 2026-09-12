@@ -37,9 +37,8 @@ public class SportstoreSecurityConfiguration {
         return http.cors(corsConfig -> corsConfig.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                                    .requestMatchers("/api/**", "/h2-console/**").permitAll()
+                                    .requestMatchers("/api/**").permitAll()
                                     .anyRequest().authenticated())
-                .headers(h -> h.frameOptions(f -> f.disable()))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

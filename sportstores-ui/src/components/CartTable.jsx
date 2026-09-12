@@ -6,9 +6,10 @@ import { Link } from "react-router-dom";
 
 const CartTable = () => {
     const { cart, addToCart, removeFromCart } = useCart();
+    console.log("CartTable rendered with cart:", cart);
 
     const subtotal = cart
-        .reduce((acc, item) => acc + item.price * item.quantity, 0)
+        .reduce((acc, item) => acc + parseFloat(item.price || 0) * item.quantity, 0)
         .toFixed(2);
 
     const updateCartQuantity = (productId, quantity) => {
@@ -64,7 +65,7 @@ const CartTable = () => {
                                 />
                             </td>
                             <td className="px-4 sm:px-6 py-4 text-base font-light">
-                                ${item.price.toFixed(2)}
+                                ${(item.price ?? 0).toFixed(2)}
                             </td>
                             <td className="px-4 sm:px-6 py-4">
                                 <button

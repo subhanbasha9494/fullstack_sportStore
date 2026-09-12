@@ -37,4 +37,7 @@ public class Customer {
     @NotNull
     @Column(name = "password", nullable = false, length = 500)
     private String password;
+
+    @Column(name = "created_by", nullable = false, length = 50)
+    private String createdBy;
 }

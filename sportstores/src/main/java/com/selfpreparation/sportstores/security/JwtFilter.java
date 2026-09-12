@@ -29,24 +29,31 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader("Authorization");
 
-        if(authHeader != null && authHeader.startsWith("Bearer")) {
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
-            if(tokenBlacklistService.isBlacklisted(token)){
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("{\"error\" \"Token has been invalidated. Please login again.\"}");
+
+            if (tokenBlacklistService.isBlacklisted(token)) {
+                sendError(response, "Token has been invalidated. Please login again.");
                 return;
             }
 
-            if(jwtUtil.validateToken(token)) {
-                System.out.println(jwtUtil.validateToken(token));
-                String username = jwtUtil.getUsernameFromToken(token);
-                UsernamePasswordAuthenticationToken authenticationToken =
-                        new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            if (!jwtUtil.validateToken(token)) {
+                sendError(response, "Token is expired or invalid. Please login again.");
+                return;
             }
+
+            String username = jwtUtil.getUsernameFromToken(token);
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
 
         filterChain.doFilter(request, response);
     }
 
+    private void sendError(HttpServletResponse response, String message) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+        response.getWriter().write("{\"error\": \"" + message + "\"}");
+    }
 }
