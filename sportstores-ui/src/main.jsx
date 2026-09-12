@@ -5,7 +5,7 @@ import App from './App.jsx'
 import { createBrowserRouter, RouterProvider, createRoutesFromElements, Route } from 'react-router-dom';
 import About from './components/About.jsx';
 import Contact from './components/Contact.jsx';
-import Login from './components/Login.jsx';
+import Login, {loginAction} from './components/Login.jsx';
 import Cart from './components/Cart.jsx';
 import ErrorPage from './components/ErrorPage.jsx';
 import Home from './components/Home.jsx';
@@ -13,6 +13,7 @@ import ProductDetail from './components/ProductDetail.jsx';
 import { ToastContainer, Bounce } from "react-toastify";
 import { CartProvider } from './store/cartContext.jsx';
 import { AuthProvider } from './store/AuthContect.jsx';
+import Register, { registerAction } from './components/Register.jsx';
 
 
 const routeDefinitions = createRoutesFromElements(
@@ -21,8 +22,9 @@ const routeDefinitions = createRoutesFromElements(
     <Route path="/home" element={<Home />} />
     <Route path="/about" element={<About />} />
     <Route path="/contact" element={<Contact />} />
-    <Route path="/login" element={<Login />} />
+    <Route path="/login" element={<Login />} action={loginAction} />
     <Route path="/cart" element={<Cart />} />
+    <Route path="/register" element={<Register />}  action={registerAction} />
     <Route path="/products/:productId" element={<ProductDetail />} />
   </Route>
 );

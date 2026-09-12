@@ -1,29 +1,60 @@
 import React from 'react';
 import PageTitle from "./PageTitle";
-import { Link } from "react-router-dom";
+import { useAuth } from "../store/AuthContect";
+import {
+  Link,
+  Form,
+  useActionData,
+  useNavigation,
+  useNavigate,
+} from "react-router-dom";
+import apiClient from "../api/apiClient";
+import { toast } from "react-toastify";
+import { useEffect } from "react";
 
-const Login = () => {
+export default function Login() {
+    const actionData = useActionData();
+    const navigation = useNavigation();
+    const isSubmitting = navigation.state === "submitting";
+    const navigate = useNavigate();
+    const { loginSuccess } = useAuth();
+    const from = sessionStorage.getItem("redirectPath") || "/home";
+
+    useEffect(() => {
+        if (actionData?.success) {
+            loginSuccess(actionData.jwtToken, actionData.user);
+            sessionStorage.removeItem("redirectPath");
+            setTimeout(() => {
+                navigate(from);
+            }, 100);
+        } else if (actionData?.errors) {
+            toast.error(actionData.errors.message || "Login failed.");
+        }
+    }, [actionData]);
+
     const labelStyle =
         "block text-lg font-semibold text-primary dark:text-light mb-2";
     const textFieldStyle =
         "w-full px-4 py-2 text-base border rounded-md transition border-primary dark:border-light focus:ring focus:ring-dark dark:focus:ring-lighter focus:outline-none text-gray-800 dark:text-lighter bg-white dark:bg-gray-600 placeholder-gray-400 dark:placeholder-gray-300";
+
     return (
         <div className="min-h-[852px] flex items-center justify-center font-primary dark:bg-darkbg">
             <div className="bg-white dark:bg-gray-700 shadow-md rounded-lg max-w-md w-full px-8 py-6">
                 {/* Title */}
                 <PageTitle title="Login" />
                 {/* Form */}
-                <form className="space-y-6">
+                <Form method="POST" className="space-y-6">
                     {/* Email Field */}
                     <div>
                         <label htmlFor="username" className={labelStyle}>
-                            Username
+                            Name
                         </label>
                         <input
                             id="username"
                             type="text"
-                            name="username"
-                            placeholder="Your Username"
+                            name="name"
+                            placeholder="Your Name"
+                            autoComplete="name"
                             required
                             className={textFieldStyle}
                         />
@@ -39,8 +70,9 @@ const Login = () => {
                             type="password"
                             name="password"
                             placeholder="Your Password"
+                            autoComplete="current-password"
                             required
-                            minLength={8}
+                            minLength={4}
                             maxLength={20}
                             className={textFieldStyle}
                         />
@@ -50,12 +82,13 @@ const Login = () => {
                     <div>
                         <button
                             type="submit"
+                            disabled={isSubmitting}
                             className="w-full px-6 py-2 text-white dark:text-black text-xl rounded-md transition duration-200 bg-primary dark:bg-light hover:bg-dark dark:hover:bg-lighter"
                         >
-                            Login
+                            {isSubmitting ? "Authenticating..." : "Login"}
                         </button>
                     </div>
-                </form>
+                </Form>
 
                 {/* Register Link */}
                 <p className="text-center text-gray-600 dark:text-gray-400 mt-4">
@@ -72,4 +105,30 @@ const Login = () => {
     );
 }
 
-export default Login;
+export async function loginAction({ request }) {
+    const data = await request.formData();
+
+    const loginData = {
+        name: data.get("name"),
+        password: data.get("password"),
+    };
+
+    try {
+        const response = await apiClient.post("/auth/login", loginData);
+        const { message, jwtToken } = response.data;
+        return { success: true, message, jwtToken };
+    } catch (error) {
+        if (error.response?.status === 401) {
+            return {
+                success: false,
+                errors: { message: "Invalid name or password" },
+            };
+        }
+        throw new Response(
+            error.response?.data?.message ||
+            error.message ||
+            "Failed to login. Please try again.",
+            { status: error.response?.status || 500 }
+        );
+    }
+}
