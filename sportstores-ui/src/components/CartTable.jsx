@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 
 const CartTable = () => {
     const { cart, addToCart, removeFromCart } = useCart();
-    console.log("CartTable rendered with cart:", cart);
 
     const subtotal = cart
         .reduce((acc, item) => acc + parseFloat(item.price || 0) * item.quantity, 0)

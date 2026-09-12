@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 
 const Cart = () => {
     const { cart } = useCart();
-
+    const navigate = useNavigate();
     // Memoize the cart length check to prevent re-renders
     const isCartEmpty = useMemo(() => cart.length === 0, [cart.length]);
 
@@ -28,8 +28,9 @@ const Cart = () => {
                             >
                                 Back to Products
                             </Link>
-                            {/* Proceed to Checkout Button */}
-                            <button className="py-2 px-4 bg-primary dark:bg-light text-white dark:text-black text-xl font-semibold rounded-sm flex justify-center items-center hover:bg-dark dark:hover:bg-lighter transition">
+                            <button
+                                onClick={() => navigate("/checkout")}
+                                className="py-2 px-4 bg-primary dark:bg-light text-white dark:text-black text-xl font-semibold rounded-sm flex justify-center items-center hover:bg-dark dark:hover:bg-lighter transition">
                                 Proceed to Checkout
                             </button>
                         </div>

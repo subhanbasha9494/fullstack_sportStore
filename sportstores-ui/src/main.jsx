@@ -14,6 +14,7 @@ import { ToastContainer, Bounce, toast } from "react-toastify";
 import { CartProvider } from './store/cartContext.jsx';
 import { AuthProvider, useAuth } from './store/AuthContect.jsx';
 import Register, { registerAction } from './components/Register.jsx';
+import Checkout from './components/Checkout.jsx';
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, isTokenExpired, jwtToken } = useAuth();
@@ -41,6 +42,7 @@ const routeDefinitions = createRoutesFromElements(
     <Route path="/login" element={<Login />} action={loginAction} />
     <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
     <Route path="/register" element={<Register />} action={registerAction} />
+    <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
     <Route path="/products/:productId" element={<ProtectedRoute><ProductDetail /></ProtectedRoute>} />
   </Route>
 );
