@@ -47,3 +47,24 @@ CREATE TABLE IF NOT EXISTS cart_items
     product_id    BIGINT        NOT NULL,
     quantity      INT           NOT NULL
 );
+
+
+CREATE TABLE IF NOT EXISTS orders
+(
+    order_id       BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    customer_name  VARCHAR(100)   NOT NULL,
+    total_amount   DECIMAL(10, 2) NOT NULL,
+    status         VARCHAR(20)    DEFAULT 'PLACED',
+    created_at     TIMESTAMP      DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at     TIMESTAMP      DEFAULT NULL
+    );
+
+CREATE TABLE IF NOT EXISTS order_items
+(
+    order_item_id  BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    order_id       BIGINT         NOT NULL REFERENCES orders(order_id),
+    product_id     BIGINT         NOT NULL,
+    product_name   VARCHAR(250)   NOT NULL,
+    price          DECIMAL(10, 2) NOT NULL,
+    quantity       INT            NOT NULL
+    );

@@ -78,6 +78,11 @@ export default function Header() {
                   <span className={navLinkClass}>Hi, {user?.name}</span>
                 </li>
                 <li>
+                  <NavLink to="/orders" className={({ isActive }) => isActive ? `underline ${navLinkClass}` : navLinkClass}>
+                    My Orders
+                  </NavLink>
+                </li>
+                <li>
                   <button onClick={handleLogout} className={navLinkClass}>
                     Logout
                   </button>

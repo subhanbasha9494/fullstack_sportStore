@@ -5,6 +5,7 @@ import { useCart } from "../store/cartContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import PageTitle from "./PageTitle";
+import orderService from "../api/orderService";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
@@ -22,7 +23,7 @@ const cardElementOptions = {
 const CheckoutForm = ({ totalAmount }) => {
     const stripe = useStripe();
     const elements = useElements();
-    const { clearCart } = useCart();
+    const { cart, clearCart } = useCart();
     const navigate = useNavigate();
     const [isProcessing, setIsProcessing] = useState(false);
 
@@ -46,8 +47,21 @@ const CheckoutForm = ({ totalAmount }) => {
 
         // Simulate successful payment (test mode)
         toast.success("Payment successful! Order placed.");
+        // after stripe.createPaymentMethod succeeds, before clearCart:
+        const orderPayload = {
+            items: cart.map(item => ({
+                productId: item.productId,
+                productName: item.name,
+                price: item.price,
+                quantity: item.quantity
+            })),
+            totalAmount: totalAmount
+        };
+
+        await orderService.placeOrder(orderPayload);  // save order in DB
+        toast.success("Payment successful! Order placed.");
         await clearCart();
-        navigate("/home");
+        navigate("/orders");
     };
 
     const inputClass = "w-full px-4 py-3 rounded-md bg-gray-700 border border-gray-500 focus:outline-none focus:border-light text-lighter";
