@@ -55,7 +55,7 @@ public class SportstoreSecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Arrays.asList("http://localhost:5173", "https://your-app.vercel.app"));
+        config.setAllowedOrigins(Arrays.asList("http://localhost:5173", "https://fullstack-sport-store.vercel.app"));
         config.setAllowedMethods(Collections.singletonList("*"));
         config.setAllowedHeaders(Collections.singletonList("*"));
         config.setAllowCredentials(true);
